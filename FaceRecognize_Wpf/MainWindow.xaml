@@ -1,0 +1,36 @@
+﻿<Window x:Class="FaceRecognize_Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FaceRecognize_Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="492.998" Width="969.704" Name="colMainWindow">
+    <Grid Margin="-3,5,2,0">
+        <Image HorizontalAlignment="Left" Height="438" Margin="10,10,0,0" VerticalAlignment="Top" Width="553" Name="CamView" OpacityMask="Black" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-0.142"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="-0.482"/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+        <Label x:Name="___沒有名稱_" Content="當前時間：" HorizontalAlignment="Left" Margin="577,51,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
+        <Label Name="NoDate"  Content="1911/01/01 12:00:00" HorizontalAlignment="Left" Margin="654,51,0,0" VerticalAlignment="Top" Width="169" FontSize="16"/>
+        <ComboBox Name="WebCamCombo"  HorizontalAlignment="Left" Margin="581,146,0,0" VerticalAlignment="Top" Width="163" Text="請選擇" Height="30"/>
+        <Button Name="CameraSetupBtn" Content="啟動" HorizontalAlignment="Left" Margin="759,146,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="SetupButton_Click"/>
+        <Label Content="狀態：" HorizontalAlignment="Left" Margin="609,81,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.533,0.452" Width="53"/>
+        <Label Name="WebCamContent" Content="未選擇相機" HorizontalAlignment="Left" Margin="654,81,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.348,0.548"/>
+        <Button x:Name="TakeShotBtn" Content="拍照" HorizontalAlignment="Left" Margin="872,187,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="TakeShotButton_Click"/>
+        <Label Content="偵測到人臉數量：" HorizontalAlignment="Left" Margin="577,111,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="FaceCount" Content="0" HorizontalAlignment="Left" Margin="706,111,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
+        <Label Content="使用者名稱(僅限英文)：" HorizontalAlignment="Left" Margin="579,187,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <TextBox x:Name="UserName" Text="unknow" HorizontalAlignment="Left" Margin="759,191,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.498,1.469" Width="108"/>
+        <Button x:Name="TrainingBtn" Content="訓練" HorizontalAlignment="Left" Margin="872,222,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="TrainingButton_Click"/>
+        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="609,275,0,0" VerticalAlignment="Top" FontSize="50" />
+        <Label Content="臉部分數：" HorizontalAlignment="Left" Margin="669,222,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
+        <Label x:Name="FaceRecognizeScore" Content="0.0" HorizontalAlignment="Left" Margin="759,222,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
+    </Grid>
+</Window>

@@ -3,3 +3,5 @@
 ################################################################################
 
 /.vs
+/FaceRecognize_Wpf/bin/Debug
+/FaceRecognize_Wpf/obj

@@ -7,9 +7,9 @@
 5. 可自選Web Camera
 
 # 使用套件 #
-1. Emgu CV
+1. Emgu.CV 4.1.0
    - 人臉追蹤、辨識、訓練 
-2. AFrog
+2. AFrog 2.2.5
    - Camera選項、設定
 
 # DEMO #

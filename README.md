@@ -14,6 +14,7 @@
 # 開發環境 #
 1. .NET Framewokr 4.7+
 2. .NET CORE 2.1+
+
 專案使用：NET Framewokr 4.7
 
 # 使用套件 #

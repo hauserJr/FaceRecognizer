@@ -15,45 +15,13 @@ namespace FaceRecognize_Wpf.Helper
     public static class ConvertType
     {
 
-        /// <summary>
-        /// Converts a <see cref="System.Drawing.Bitmap"/> into a WPF <see cref="BitmapSource"/>.
-        /// </summary>
-        /// <remarks>Uses GDI to do the conversion. Hence the call to the marshalled DeleteObject.
-        /// </remarks>
-        /// <param name="source">The source bitmap.</param>
-        /// <returns>A BitmapSource</returns>
-        public static BitmapSource ToBitmapSource(this System.Drawing.Bitmap source)
-        {
-            BitmapSource bitSrc = null;
-
-            var hBitmap = source.GetHbitmap();
-
-            try
-            {
-                bitSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                    hBitmap,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
-            }
-            catch (Win32Exception)
-            {
-                bitSrc = null;
-            }
-            finally
-            {
-                //NativeMethods.DeleteObject(hBitmap);
-            }
-
-            return bitSrc;
-        }
 
         // Bitmap --> BitmapImage
         public static BitmapImage BitmapToBitmapImage(this Bitmap bitmap)
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                bitmap.Save(stream, ImageFormat.Png); // 坑点：格式选Bmp时，不带透明度
+                bitmap.Save(stream, ImageFormat.Png); //
 
                 stream.Position = 0;
                 BitmapImage result = new BitmapImage();

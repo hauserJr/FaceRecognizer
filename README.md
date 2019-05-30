@@ -26,7 +26,7 @@
 ![image](https://i.imgur.com/4NCkUAZ.png)
 
 > REJECT
-![image](https://i.imgur.com/eCebVTs.png)
+![image](https://i.imgur.com/undefined.png)
 
 注意：
 1. Distance分數越低越符合訓練結果，但實際數字仍須自行調整

@@ -67,8 +67,6 @@ namespace FaceRecognize_Wpf.UCWindows
         public delegate void FaceResultDelegate(string Content, Brush brush);
         public delegate void FaceScoreDelegate(double Score);
         public delegate void UpdateCollentionDelegate();
-        public delegate void ResetCameraDelegate();
-
 
         /// <summary>
         /// 修改Web Camera Status
@@ -206,10 +204,6 @@ namespace FaceRecognize_Wpf.UCWindows
             NameCollection.Update();
         }
 
-        public void ResetCamera()
-        {
-            Task.Run(() => ShowCamera());
-        }
         #endregion
 
         #region Action
@@ -337,13 +331,6 @@ namespace FaceRecognize_Wpf.UCWindows
                     });
                     //將Stop Task Flag恢復預設
                     IsStopTask = false;
-
-                    //釋放資源
-                    camCapture.Dispose();
-
-                    //重新啟用Camera
-                    this.Dispatcher.Invoke(new ResetCameraDelegate(ResetCamera));
-
                     break;
                 }
             }

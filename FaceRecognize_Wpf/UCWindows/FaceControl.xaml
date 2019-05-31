@@ -37,7 +37,7 @@
         <Label Content="建議臉部基數：" HorizontalAlignment="Left" Margin="622,246,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Label x:Name="BaseScoreAvg" Content="0.0" HorizontalAlignment="Left" Margin="744,248,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Button x:Name="UseBase" Content="使用建議基數" HorizontalAlignment="Left" Margin="857,251,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="UseBase_Click"/>
-        <Label Content="員工編號：" HorizontalAlignment="Left" Margin="654,151,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label Content="識別值：" HorizontalAlignment="Left" Margin="670,151,0,0" VerticalAlignment="Top" FontSize="16"/>
         <TextBox x:Name="EmployeeNum" Text="0" HorizontalAlignment="Left" Margin="745,155,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.498,1.469" Width="108"/>
     </Grid>
 </Page>

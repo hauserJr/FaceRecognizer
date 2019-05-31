@@ -6,14 +6,16 @@
 4. 支援離線辨識
 5. 可自選Camera
 6. 辨識度高(資料訓練充足可達95%以上)
+7. 可自訂臉部基數或使用系統推薦
 
 # 額外功能說明 #
 1. 支援多臉追蹤
 2. 支援多臉辨識(目前設定僅辨識最近的)
+3. 計算臉部基數平均(判斷是否成功的基準)
 
-# 開發環境 #
+# 可應用環境 #
 1. .NET Framewokr 4.7+
-2. .NET CORE 2.1+
+2. .NET Core 2.0+
 
 專案使用：NET Framewokr 4.7
 
@@ -30,15 +32,16 @@
 操作步驟：
 1. 啟用Camera 
 2. 輸入姓名(英文)
+3. 輸入編號(唯一值)
 3. 拍照
 4. 訓練
 
 結果：
 > PASS
-![image](https://i.imgur.com/4NCkUAZ.png)
+![image](https://i.imgur.com/0lc4s9j.png)
 
 > REJECT
-![image](https://i.imgur.com/A6RAY7o.png)
+![image](https://i.imgur.com/OKHXuGH.png)
 
 # 注意 #
 1. Distance分數越低越符合訓練結果，但實際數字仍須自行調整

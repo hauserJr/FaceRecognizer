@@ -21,8 +21,7 @@
                 <MenuItem.Background>
                     <ImageBrush/>
                 </MenuItem.Background>
-                <MenuItem Header="首頁" Click="FaceInit_Click"/>
-                <MenuItem Header="臉部訓練" Click="FaceConfigure_Click"/>
+                <MenuItem Header="臉部訓練" Click="FaceInit_Click"/>
                 <MenuItem Header="臉部辨識" Click="FaceConfigure_Click"/>
             </MenuItem>
         </Menu>

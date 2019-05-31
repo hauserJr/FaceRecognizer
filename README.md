@@ -51,3 +51,4 @@
 4. 要辨識臉及眼的位置需要下列兩種xml，可從[OpenCV Github下載](https://github.com/opencv/opencv/tree/master/data/haarcascades)
    - haarcascade_frontalface_default.xml
    - haarcascade_eye.xml
+5. 如果要建立訓練模組可利用[AI人臉自動生成](https://thispersondoesnotexist.com/)來取得資訊

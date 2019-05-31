@@ -1,0 +1,21 @@
+﻿<Page x:Class="FaceRecognize_Wpf.UCWindows.FaceConfigure"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FaceRecognize_Wpf.UCWindows"
+      mc:Ignorable="d" 
+      d:DesignHeight="418" d:DesignWidth="943"
+      Title="FaceConfigure">
+
+    <Grid >
+        <Label Content="人臉辨識基數："
+               FontSize="18"
+               HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="BaseScore" FontSize="18" Height="23" Margin="143,63,0,0" TextWrapping="Wrap" Text="TextBox" Width="120" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label x:Name="BaseScoreDesc" FontSize="14" Content="BaseScoreDesc" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="288" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
+        <Button Content="儲存並套用" FontSize="15" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="90" Click="Update_Click"/>
+        <Button Content="回復預設" FontSize="15" HorizontalAlignment="Left" Margin="105,27,0,0" VerticalAlignment="Top" Width="90" Click="Restore_Click"/>
+
+    </Grid>
+</Page>

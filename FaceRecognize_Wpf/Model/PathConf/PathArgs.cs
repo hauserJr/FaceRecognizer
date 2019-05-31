@@ -33,7 +33,15 @@ namespace FaceRecognize_Wpf
         {
             get
             {
-                return @"faces.yml";
+                return @"faces.dat";
+            }
+        }
+
+        public static string configureFile
+        {
+            get
+            {
+                return @"application.json";
             }
         }
 

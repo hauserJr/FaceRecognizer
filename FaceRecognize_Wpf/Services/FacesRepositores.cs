@@ -2,52 +2,78 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Face;
 using Emgu.CV.Structure;
+using FaceRecognize_Wpf.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Emgu.CV.Face.FaceRecognizer;
 
 namespace FaceRecognize_Wpf.Services
 {
     public class FacesRepositores
     {
         private FaceRecognizer faceRecognizer;
+        private JsonFileApp configureApp = new JsonFileApp();
         private readonly string FilePath = $"{PathArgs.dataDomain}{PathArgs.facePicturePath}";
         private readonly string TrainingDataPath = $"{PathArgs.dataDomain}{PathArgs.faceDataPath}{PathArgs.faceDateName}";
         public FacesRepositores()
         {
-            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
         }
 
-        public void FaceTraining()
+        public int FaceTraining()
         {
+            //訓練前先釋放記憶體
+            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
+
             var facesMat = new List<Mat>();
             var labels = new List<int>();
+            
 
             //取得路徑下所有照片
-            foreach (var FileName in Directory.GetFiles(FilePath)
-                .Select((value, index) => new { index, value }))
-            {
-                //照片灰階處理
-                facesMat.Add(new Mat($"{FileName.value}").ToImage<Gray, byte>().Mat);
-                //照片Tag
-                labels.Add(FileName.index);
-            }
+            int PictureCount = 0;
 
-            //進行訓練
-            faceRecognizer.Train(facesMat.ToArray(), labels.ToArray());
-            faceRecognizer.Write(TrainingDataPath);
+            foreach (var dirItem in Directory.GetDirectories(FilePath))
+            {
+                //移除路徑及檔名
+                var getUserDetail = dirItem.Replace(FilePath, "");
+                var getEmployeeNum = getUserDetail.Split('.')[0];
+                var getUserName = getUserDetail.Split('.')[1];
+
+                foreach (var fileName in Directory.GetFiles(dirItem)
+                .Select((value, index) => new { index, value }))
+                {
+                    //照片灰階處理
+                    facesMat.Add(new Mat($"{fileName.value}").ToImage<Gray, byte>().Mat);
+                    //照片Tag
+                    labels.Add(int.Parse(getEmployeeNum));
+                    PictureCount += 1;
+                }
+
+                //進行訓練
+                faceRecognizer.Train(facesMat.ToArray(), labels.ToArray());
+                faceRecognizer.Write(TrainingDataPath);
+            }
+            return PictureCount;
         }
 
-        public (double,bool) FacesRecognize(Mat face)
+        public (double, int, bool) FacesRecognize(Mat face)
         {
+            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
+
+            //取得基數設定
+            var getData = configureApp.GetConfigureFileData();
+
             //基準數
-            double faceBase = 100.0;
+            double faceBase = getData.faceBaseScore;
 
             //偵測是否為人臉
             var getFaceData = new FaceTrace().TraceFace(face);
+
+            //取得訓練資料
+            faceRecognizer.Read(TrainingDataPath);
 
             //如果是人臉進行比對
             foreach (var item in getFaceData.Faces)
@@ -58,13 +84,26 @@ namespace FaceRecognize_Wpf.Services
                     .GetSubRect(item)
                     .Resize(100, 100, Inter.Cubic);
 
+                FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
+                if (fileStream.Length != 0)
+                {
+                    var predictResult = faceRecognizer.Predict(ToGrayFace);
 
-                faceRecognizer.Read(TrainingDataPath);
-
-                var predictResult = faceRecognizer.Predict(ToGrayFace);
-                return (predictResult.Distance, predictResult.Distance <= faceBase ? true : false);
+                    //當有一筆資料吻合 其他則不再辨識
+                    if (predictResult.Distance <= faceBase)
+                    {
+                        return (predictResult.Distance, predictResult.Label, true);
+                    }
+                }
+                fileStream.Dispose();
             }
-            return (0.0, false);
+            
+            return (0, 0, false);
+        }
+
+        public int GetFileCount(string filePath)
+        {
+            return Directory.GetFiles(filePath).Length;
         }
     }
 }

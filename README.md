@@ -37,11 +37,12 @@
 4. 訓練
 
 結果：
-> PASS
-![image](https://i.imgur.com/0lc4s9j.png)
 
-> REJECT
+> 訓練前REJECT
 ![image](https://i.imgur.com/OKHXuGH.png)
+
+> 訓練後PASS
+![image](https://i.imgur.com/jzZH8uS.png)
 
 # 注意 #
 1. Distance分數越低越符合訓練結果，但實際數字仍須自行調整
@@ -52,3 +53,6 @@
    - haarcascade_frontalface_default.xml
    - haarcascade_eye.xml
 5. 如果要建立訓練模組可利用[AI人臉自動生成](https://thispersondoesnotexist.com/)來取得資訊
+
+# 建議 #
+可以從各種角度拍攝人臉，蒐集的越完整辨識度越高，誤判機率越低。

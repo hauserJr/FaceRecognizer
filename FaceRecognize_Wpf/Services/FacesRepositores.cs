@@ -21,13 +21,11 @@ namespace FaceRecognize_Wpf.Services
         private readonly string TrainingDataPath = $"{PathArgs.dataDomain}{PathArgs.faceDataPath}{PathArgs.faceDateName}";
         public FacesRepositores()
         {
+            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
         }
 
         public int FaceTraining()
         {
-            //訓練前先釋放記憶體
-            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
-
             var facesMat = new List<Mat>();
             var labels = new List<int>();
             
@@ -61,8 +59,7 @@ namespace FaceRecognize_Wpf.Services
 
         public (double, int, bool) FacesRecognize(Mat face)
         {
-            faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
-
+      
             //取得基數設定
             var getData = configureApp.GetConfigureFileData();
 
@@ -72,32 +69,31 @@ namespace FaceRecognize_Wpf.Services
             //偵測是否為人臉
             var getFaceData = new FaceTrace().TraceFace(face);
 
-            //取得訓練資料
             faceRecognizer.Read(TrainingDataPath);
-
-            //如果是人臉進行比對
-            foreach (var item in getFaceData.Faces)
+            FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
+            if (fileStream.Length > 0)
             {
-                //影格圖片灰階化 並設定大小100
-                var ToGrayFace = face
-                    .ToImage<Gray, byte>()
-                    .GetSubRect(item)
-                    .Resize(100, 100, Inter.Cubic);
-
-                FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
-                if (fileStream.Length != 0)
+                //如果是人臉進行比對
+                foreach (var item in getFaceData.Faces)
                 {
-                    var predictResult = faceRecognizer.Predict(ToGrayFace);
+                    //影格圖片灰階化 並設定大小100
+                    var ToGrayFace = face
+                        .ToImage<Gray, byte>()
+                        .GetSubRect(item)
+                        .Resize(100, 100, Inter.Cubic);
 
-                    //當有一筆資料吻合 其他則不再辨識
-                    if (predictResult.Distance <= faceBase)
+                    if (fileStream.Length != 0)
                     {
-                        return (predictResult.Distance, predictResult.Label, true);
+                        var predictResult = faceRecognizer.Predict(ToGrayFace);
+
+                        //當有一筆資料吻合 其他則不再辨識
+                        if (predictResult.Distance <= faceBase)
+                        {
+                            return (predictResult.Distance, predictResult.Label, true);
+                        }
                     }
                 }
-                fileStream.Dispose();
             }
-            
             return (0, 0, false);
         }
 

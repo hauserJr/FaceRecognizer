@@ -22,7 +22,7 @@
                     <ImageBrush/>
                 </MenuItem.Background>
                 <MenuItem Header="臉部訓練" Click="FaceInit_Click"/>
-                <MenuItem Header="臉部辨識" Click="FaceConfigure_Click"/>
+                <MenuItem Header="臉部辨識" Click="FaceRecognize_Click"/>
             </MenuItem>
         </Menu>
         <Frame Name="FrameContainer" Content="" HorizontalAlignment="Left" Height="418" Margin="10,29,0,0" VerticalAlignment="Top" Width="943" NavigationUIVisibility="Hidden"/>

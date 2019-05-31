@@ -59,17 +59,22 @@ namespace FaceRecognize_Wpf
             FaceControl faceControl = new FaceControl();
             this.FrameContainer.Navigate(faceControl);
         }
+        private void FaceInit_Click(object sender, RoutedEventArgs e)
+        {
+            FaceControl faceControl = new FaceControl();
+            this.FrameContainer.Navigate(faceControl);
+        }
+
+        private void FaceRecognize_Click(object sender, RoutedEventArgs e)
+        {
+            FaceRecognize faceRecognize = new FaceRecognize();
+            this.FrameContainer.Navigate(faceRecognize);
+        }
 
         private void FaceConfigure_Click(object sender, RoutedEventArgs e)
         {
             FaceConfigure faceConfigure = new FaceConfigure();
             this.FrameContainer.Navigate(faceConfigure);
-        }
-
-        private void FaceInit_Click(object sender, RoutedEventArgs e)
-        {
-            FaceControl faceControl = new FaceControl();
-            this.FrameContainer.Navigate(faceControl);
         }
     }
 }

@@ -59,40 +59,53 @@ namespace FaceRecognize_Wpf.Services
 
         public (double, int, bool) FacesRecognize(Mat face)
         {
-      
-            //取得基數設定
-            var getData = configureApp.GetConfigureFileData();
 
-            //基準數
-            double faceBase = getData.faceBaseScore;
-
-            //偵測是否為人臉
-            var getFaceData = new FaceTrace().TraceFace(face);
-
-            faceRecognizer.Read(TrainingDataPath);
-            FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
-            if (fileStream.Length > 0)
+            try
             {
-                //如果是人臉進行比對
-                foreach (var item in getFaceData.Faces)
+                //取得基數設定
+                var getData = configureApp.GetConfigureFileData();
+
+                //基準數
+                double faceBase = getData.faceBaseScore;
+
+                //偵測是否為人臉
+                var getFaceData = new FaceTrace().TraceFace(face);
+
+                FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
+
+                //初始化EigenFaceRecognizer
+                //不初始化會導致Emgu CV底層對於記憶體操作發生錯誤
+                faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
+                if (fileStream.Length > 0)
                 {
-                    //影格圖片灰階化 並設定大小100
-                    var ToGrayFace = face
-                        .ToImage<Gray, byte>()
-                        .GetSubRect(item)
-                        .Resize(100, 100, Inter.Cubic);
+                    faceRecognizer.Read(TrainingDataPath);
 
-                    if (fileStream.Length != 0)
+                    //如果是人臉進行比對
+                    foreach (var item in getFaceData.Faces)
                     {
-                        var predictResult = faceRecognizer.Predict(ToGrayFace);
+                        //影格圖片灰階化 並設定大小100
+                        var ToGrayFace = face
+                            .ToImage<Gray, byte>()
+                            .GetSubRect(item)
+                            .Resize(100, 100, Inter.Cubic);
 
-                        //當有一筆資料吻合 其他則不再辨識
-                        if (predictResult.Distance <= faceBase)
+                        if (fileStream.Length != 0)
                         {
-                            return (predictResult.Distance, predictResult.Label, true);
+                            //重新宣告
+                            var predictResult = faceRecognizer.Predict(ToGrayFace);
+
+                            //當有一筆資料吻合 其他則不再辨識
+                            if (predictResult.Distance <= faceBase)
+                            {
+                                return (predictResult.Distance, predictResult.Label, true);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return (0, 0, false);
             }
             return (0, 0, false);
         }

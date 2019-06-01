@@ -251,11 +251,15 @@ namespace FaceRecognize_Wpf.UCWindows
             //進入無窮迴圈
             while (true)
             {
+                //每0.1秒執行一次
+                Thread.Sleep(100);
                 try
                 {
                     //當收到Task停止指示時
                     if (IsStopTask)
                     {
+                        camCapture.Stop();
+                        camCapture.Dispose();
                         throw new Exception();
                     }
                     else
@@ -316,7 +320,6 @@ namespace FaceRecognize_Wpf.UCWindows
                 }
                 catch (Exception ex)
                 {
-                    camCapture.Stop();
                     //當發生Catch或者Task停止時
                     this.Dispatcher.Invoke(() =>
                     {

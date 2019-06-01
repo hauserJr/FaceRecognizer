@@ -37,17 +37,22 @@
 4. 訓練
 
 結果：
-> PASS
-![image](https://i.imgur.com/0lc4s9j.png)
 
-> REJECT
+> 訓練前REJECT
 ![image](https://i.imgur.com/OKHXuGH.png)
+
+> 訓練後PASS
+![image](https://i.imgur.com/jzZH8uS.png)
 
 # 注意 #
 1. Distance分數越低越符合訓練結果，但實際數字仍須自行調整
-2. 訓練圖片需要有2張以上(含兩張)，才可進行比對
+2. 需要至少有2筆不同人的訓練資料，才可進行比對
 3. 部分功能需自行從[EmguCV Github](https://github.com/emgucv/emgucv)移植
    - 如../EmguCVSourceCode/DetectFace.cs內的功能
 4. 要辨識臉及眼的位置需要下列兩種xml，可從[OpenCV Github下載](https://github.com/opencv/opencv/tree/master/data/haarcascades)
    - haarcascade_frontalface_default.xml
    - haarcascade_eye.xml
+5. 如果要建立訓練模組可利用[AI人臉自動生成](https://thispersondoesnotexist.com/)來取得資訊
+
+# 建議 #
+可以從各種角度拍攝人臉，蒐集的越完整辨識度越高，誤判機率越低。

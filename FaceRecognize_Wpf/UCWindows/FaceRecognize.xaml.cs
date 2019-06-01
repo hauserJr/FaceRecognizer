@@ -149,6 +149,7 @@ namespace FaceRecognize_Wpf.UCWindows
             //進入無窮迴圈
             while (true)
             {
+                Thread.Sleep(80);
                 try
                 {
                     //當收到Task停止指示時

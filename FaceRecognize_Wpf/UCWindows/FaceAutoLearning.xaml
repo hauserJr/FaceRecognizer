@@ -1,0 +1,30 @@
+﻿<Page x:Class="FaceRecognize_Wpf.UCWindows.FaceAutoLearning"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FaceRecognize_Wpf.UCWindows"
+      mc:Ignorable="d" 
+      d:DesignHeight="395" d:DesignWidth="943"
+      Title="FaceAutoLearning">
+
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="389" Margin="7,3,0,0" VerticalAlignment="Top" Width="540" Name="CamView" OpacityMask="Black" RenderTransformOrigin="0.503,0.357">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-0.142"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="-0.339"/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+        <ComboBox Name="WebCamCombo"  HorizontalAlignment="Left" Margin="581,81,0,0" VerticalAlignment="Top" Width="163" Text="請選擇" Height="30"/>
+        <Button Name="CameraSetupBtn" Content="啟動" HorizontalAlignment="Left" Margin="749,81,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="SetupButton_Click"/>
+        <Label Content="狀態：" HorizontalAlignment="Left" Margin="577,46,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.533,0.452" Width="53"/>
+        <Label Name="WebCamContent" Content="未選擇相機" HorizontalAlignment="Left" Margin="621,46,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.348,0.548"/>
+        <Label x:Name="TrainTip" Content="等候訓練啟動 ..." HorizontalAlignment="Left" Margin="581,272,0,0" VerticalAlignment="Top" FontSize="30px"/>
+        <Label Content="人臉數量：" HorizontalAlignment="Left" Margin="582,219,0,0" VerticalAlignment="Top" FontSize="30px"/>
+        <Label x:Name="FaceResultText" Content="0" HorizontalAlignment="Left" Margin="730,219,0,0" VerticalAlignment="Top" FontSize="30px"/>
+    </Grid>
+</Page>

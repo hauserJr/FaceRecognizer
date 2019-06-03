@@ -25,6 +25,10 @@ namespace FaceRecognize_Wpf.Services
             }
         }
 
+        /// <summary>
+        /// 取得Name
+        /// </summary>
+        /// <returns></returns>
         private static List<NameList> GenName()
         {
             var userData = new List<NameList>();
@@ -43,9 +47,12 @@ namespace FaceRecognize_Wpf.Services
             return userData;
         }
 
+        /// <summary>
+        /// 更新Name
+        /// </summary>
         public static void Update()
         {
-            GenName();
+            _UserTable = GenName();
         }
     }
 }

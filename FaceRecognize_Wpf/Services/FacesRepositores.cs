@@ -17,18 +17,55 @@ namespace FaceRecognize_Wpf.Services
     {
         private FaceRecognizer faceRecognizer;
         private JsonFileApp configureApp = new JsonFileApp();
-        private readonly string FilePath = $"{PathArgs.dataDomain}{PathArgs.facePicturePath}";
+        private string FilePath = $"{PathArgs.dataDomain}{PathArgs.facePicturePath}";
         private readonly string TrainingDataPath = $"{PathArgs.dataDomain}{PathArgs.faceDataPath}{PathArgs.faceDateName}";
+        private readonly string TrainingDataPath_Backup = $"{PathArgs.dataDomain}{PathArgs.faceDataBackupPath}{PathArgs.faceDateName}";
         public FacesRepositores()
         {
             faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
         }
 
-        public int FaceTraining()
+        public int FaceTraining(string filePath = null)
         {
             var facesMat = new List<Mat>();
             var labels = new List<int>();
-            
+
+            //取得路徑下所有照片
+            int PictureCount = 0;
+            if (filePath != null)
+            {
+                //移除路徑及檔名
+                var getUserDetail = filePath.Replace(FilePath, "");
+                var getEmployeeNum = getUserDetail.Split('.')[0];
+                var getUserName = getUserDetail.Split('.')[1];
+
+                foreach (var fileName in Directory.GetFiles(filePath)
+                .Select((value, index) => new { index, value }))
+                {
+                    //照片灰階處理
+                    facesMat.Add(new Mat($"{fileName.value}").ToImage<Gray, byte>().Mat);
+                    //照片Tag
+                    labels.Add(int.Parse(getEmployeeNum));
+                    PictureCount += 1;
+                }
+
+                //進行訓練
+                //var AsyncfaceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
+                faceRecognizer.Train(facesMat.ToArray(), labels.ToArray());
+                faceRecognizer.Write(TrainingDataPath_Backup);
+            }
+            return PictureCount;
+        }
+
+        public int MultipleFaceTraining(string filePath = null)
+        {
+            var facesMat = new List<Mat>();
+            var labels = new List<int>();
+
+            if (filePath != null)
+            {
+                FilePath = filePath;
+            }
 
             //取得路徑下所有照片
             int PictureCount = 0;
@@ -47,12 +84,13 @@ namespace FaceRecognize_Wpf.Services
                     facesMat.Add(new Mat($"{fileName.value}").ToImage<Gray, byte>().Mat);
                     //照片Tag
                     labels.Add(int.Parse(getEmployeeNum));
+                    //進行訓練
+                    
                     PictureCount += 1;
                 }
 
-                //進行訓練
                 faceRecognizer.Train(facesMat.ToArray(), labels.ToArray());
-                faceRecognizer.Write(TrainingDataPath);
+                faceRecognizer.Write(TrainingDataPath_Backup);
             }
             return PictureCount;
         }
@@ -66,7 +104,7 @@ namespace FaceRecognize_Wpf.Services
                 var getData = configureApp.GetConfigureFileData();
 
                 //基準數
-                double faceBase = getData.faceBaseScore;
+                double faceBase = double.Parse(getData.faceBaseScore);
 
                 //偵測是否為人臉
                 var getFaceData = new FaceTrace().TraceFace(face);
@@ -109,6 +147,64 @@ namespace FaceRecognize_Wpf.Services
             }
             return (0, 0, false);
         }
+
+
+        /// <summary>
+        /// 臉部自動訓練
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public (double, int, bool) FacesRecognizeML(Mat face)
+        {
+            var settingApp = new JsonFileApp().GetConfigureFileData();
+            try
+            {
+                //取得基數設定
+                var getData = configureApp.GetConfigureFileData();
+
+                //偵測是否為人臉
+                var getFaceData = new FaceTrace().TraceFace(face);
+
+                FileStream fileStream = new FileStream(TrainingDataPath, FileMode.Open, FileAccess.Read);
+
+                //初始化EigenFaceRecognizer
+                //不初始化會導致Emgu CV底層對於記憶體操作發生錯誤
+                faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
+                if (fileStream.Length > 0)
+                {
+                    faceRecognizer.Read(TrainingDataPath);
+
+                    //如果是人臉進行比對
+                    foreach (var item in getFaceData.Faces)
+                    {
+                        //影格圖片灰階化 並設定大小100
+                        var ToGrayFace = face
+                            .ToImage<Gray, byte>()
+                            .GetSubRect(item)
+                            .Resize(100, 100, Inter.Cubic);
+
+                        if (fileStream.Length != 0)
+                        {
+                            //重新宣告
+                            var predictResult = faceRecognizer.Predict(ToGrayFace);
+
+                            //當有一筆資料吻合 其他則不再辨識
+                            if (predictResult.Distance >= double.Parse(settingApp.faceMLMinScore) 
+                                && predictResult.Distance <= double.Parse(settingApp.faceMLMaxScore))
+                            {
+                                return (predictResult.Distance, predictResult.Label, true);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return (0, 0, false);
+            }
+            return (0, 0, false);
+        }
+
 
         public int GetFileCount(string filePath)
         {

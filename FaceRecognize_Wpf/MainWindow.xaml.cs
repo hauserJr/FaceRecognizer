@@ -56,6 +56,8 @@ namespace FaceRecognize_Wpf
         {
             InitializeComponent();
 
+            Task.Run(() => UpdateDate());
+
             FaceControl faceControl = new FaceControl();
             this.FrameContainer.Navigate(faceControl);
         }
@@ -75,6 +77,29 @@ namespace FaceRecognize_Wpf
         {
             FaceConfigure faceConfigure = new FaceConfigure();
             this.FrameContainer.Navigate(faceConfigure);
+        }
+
+        private void FaceAutoLearning_Click(object sender, RoutedEventArgs e)
+        {
+            FaceAutoLearning faceAutoLearning = new FaceAutoLearning();
+            this.FrameContainer.Navigate(faceAutoLearning);
+        }
+
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        public void UpdateDate()
+        {
+            while (true)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.NowDate.Content = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}" +
+                    $" {DateConvert.TWDayOfWeek(DateTime.Now)}";
+                });
+                Thread.Sleep(1000);
+            }
         }
     }
 }

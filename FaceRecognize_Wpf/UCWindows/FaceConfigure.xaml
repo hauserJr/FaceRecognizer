@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FaceRecognize_Wpf.UCWindows"
       mc:Ignorable="d" 
-      d:DesignHeight="418" d:DesignWidth="943"
+      d:DesignHeight="395" d:DesignWidth="943"
       Title="FaceConfigure">
 
     <Grid >
@@ -13,9 +13,18 @@
                FontSize="18"
                HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="BaseScore" FontSize="18" Height="23" Margin="143,63,0,0" TextWrapping="Wrap" Text="TextBox" Width="120" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-        <Label x:Name="BaseScoreDesc" FontSize="14" Content="BaseScoreDesc" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="288" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
+        <Label x:Name="BaseScoreDesc" FontSize="14" Content="臉部辨識分數越接近0，&#xA;辨識率越高，&#xD;&#xA;以上分數皆為參考值，&#xA;最終仍須實際情況調整，&#xA;黃光約2500; 白光約200;&#xA;在不同光源下分數都不一樣。" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="288" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
         <Button Content="儲存並套用" FontSize="15" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="90" Click="Update_Click"/>
         <Button Content="回復預設" FontSize="15" HorizontalAlignment="Left" Margin="105,27,0,0" VerticalAlignment="Top" Width="90" Click="Restore_Click"/>
+        <Label Content="自動訓練基數最小值："
+            FontSize="18"
+            HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="BaseScoreMin" FontSize="18" Height="23" Margin="200,220,0,0" TextWrapping="Wrap" Text="TextBox" Width="88" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label Content="自動訓練基數最大值："
+            FontSize="18"
+            HorizontalAlignment="Left" Margin="10,250,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="BaseScoreMax" FontSize="18" Height="23" Margin="200,254,0,0" TextWrapping="Wrap" Text="TextBox" Width="88" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label x:Name="BaseScoreDesc_Copy" FontSize="14" Content="當啟動自動訓練後，臉部辨識基數落於區間內將會自動訓練。" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top" Width="536" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
 
     </Grid>
 </Page>

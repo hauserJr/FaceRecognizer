@@ -29,6 +29,14 @@ namespace FaceRecognize_Wpf
                 return @"/face_data/";
             }
         }
+
+        public static string faceDataBackupPath
+        {
+            get
+            {
+                return @"/face_data/backup/";
+            }
+        }
         public static string faceDateName
         {
             get

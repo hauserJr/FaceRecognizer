@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FaceRecognize_Wpf.UCWindows"
              mc:Ignorable="d" 
-             d:DesignHeight="418" d:DesignWidth="943">
+             d:DesignHeight="395" d:DesignWidth="943">
     <Grid Margin="0,0,0,0">
-        <Image HorizontalAlignment="Left" Height="389" Margin="27,11,0,0" VerticalAlignment="Top" Width="584" Name="CamView" OpacityMask="Black" RenderTransformOrigin="0.503,0.357">
+        <Image HorizontalAlignment="Left" Height="389" Margin="7,3,0,0" VerticalAlignment="Top" Width="540" Name="CamView" OpacityMask="Black" RenderTransformOrigin="0.503,0.357">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -17,16 +17,23 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <Label x:Name="___沒有名稱_" Content="當前時間：" HorizontalAlignment="Left" Margin="615,89,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
-        <Label Name="NoDate"  Content="1911/01/01 12:00:00" HorizontalAlignment="Left" Margin="692,89,0,0" VerticalAlignment="Top" Width="169" FontSize="16"/>
-        <ComboBox Name="WebCamCombo"  HorizontalAlignment="Left" Margin="622,54,0,0" VerticalAlignment="Top" Width="163" Text="請選擇" Height="30"/>
-        <Button Name="CameraSetupBtn" Content="啟動" HorizontalAlignment="Left" Margin="800,54,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="SetupButton_Click"/>
-        <Label Content="狀態：" HorizontalAlignment="Left" Margin="647,119,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.533,0.452" Width="53"/>
-        <Label Name="WebCamContent" Content="未選擇相機" HorizontalAlignment="Left" Margin="692,119,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.348,0.548"/>
-        <Label Content="偵測到人臉數量：" HorizontalAlignment="Left" Margin="615,149,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="FaceCount" Content="0" HorizontalAlignment="Left" Margin="744,149,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
-        <Label Content="臉部分數：" HorizontalAlignment="Left" Margin="654,179,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
-        <Label x:Name="FaceRecognizeScore" Content="0.0" HorizontalAlignment="Left" Margin="744,179,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
-        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="622,226,0,0" VerticalAlignment="Top" FontSize="50" Width="259" />
+        <ComboBox Name="WebCamCombo"  HorizontalAlignment="Left" Margin="576,44,0,0" VerticalAlignment="Top" Width="163" Text="請選擇" Height="30"/>
+        <Button Name="CameraSetupBtn" Content="啟動" HorizontalAlignment="Left" Margin="754,44,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="SetupButton_Click"/>
+        <Label Content="狀態：" HorizontalAlignment="Left" Margin="658,79,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.533,0.452" Width="53"/>
+        <Label Name="WebCamContent" Content="未選擇相機" HorizontalAlignment="Left" Margin="707,79,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.348,0.548"/>
+        <Label Content="偵測到人臉數量：" HorizontalAlignment="Left" Margin="578,106,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="FaceCount" Content="0" HorizontalAlignment="Left" Margin="707,106,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
+        <Label Content="臉部分數：" HorizontalAlignment="Left" Margin="626,136,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
+        <Label x:Name="FaceRecognizeScore" Content="0.0" HorizontalAlignment="Left" Margin="707,136,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
+        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="578,197,0,0" VerticalAlignment="Top" FontSize="50" Width="301" RenderTransformOrigin="0.5,0.5" Height="141" >
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="-0.431"/>
+                    <RotateTransform Angle="0.601"/>
+                    <TranslateTransform Y="-0.974"/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
     </Grid>
 </UserControl>

@@ -29,12 +29,6 @@ namespace FaceRecognize_Wpf.UCWindows
 
             //預設值
             SetValueToUI();
-
-
-            this.BaseScoreDesc.Content = $"臉部辨識分數越接近0辨識率越高" +
-                $"\r\n在不同光源下分數都不一樣" +
-                $"\r\n黃光約2500;白光約200" +
-                $"\r\n以上分數皆為參考值，最終仍須實際情況調整";
         }
 
         /// <summary>
@@ -43,13 +37,19 @@ namespace FaceRecognize_Wpf.UCWindows
         public void SetValueToUI()
         {
             var appData = configureApp.GetConfigureFileData();
-            this.BaseScore.Text = appData.faceBaseScore.ToString();
+            this.BaseScore.Text = appData.faceBaseScore;
+            this.BaseScoreMin.Text = appData.faceMLMinScore;
+            this.BaseScoreMax.Text = appData.faceMLMaxScore;
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
             var getData = configureApp.GetConfigureFileData();
-            getData.faceBaseScore = double.Parse(this.BaseScore.Text);
+
+
+            getData.faceBaseScore = this.BaseScore.Text;
+            getData.faceMLMinScore = this.BaseScoreMin.Text;
+            getData.faceMLMaxScore = this.BaseScoreMax.Text;
 
             configureApp.UpdateConfigureFile(getData);
             SetValueToUI();

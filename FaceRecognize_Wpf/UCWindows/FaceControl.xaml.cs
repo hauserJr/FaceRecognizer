@@ -22,6 +22,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.IO;
+using FaceRecognize_Wpf.Emun;
 
 namespace FaceRecognize_Wpf.UCWindows
 {
@@ -45,8 +46,21 @@ namespace FaceRecognize_Wpf.UCWindows
         //圖片存放位置
         private string cameraPath = $"{PathArgs.dataDomain}{PathArgs.facePicturePath}";
 
+        private DateTime? takeFeatures;
+
         //建議分數
         private static List<double> scoreAvg = new List<double>();
+
+        //Handlers Method Collention
+        private static HandlerCollention handlerCollention = new HandlerCollention();
+
+        //MessageBox Handlers
+        MessageShoeDelegate messageShoeDelegate
+                = new MessageShoeDelegate(handlerCollention.MessageShow);
+
+        //Label Handler
+        LabelContentDelegate labelContentDelegate
+                = new LabelContentDelegate(handlerCollention.SetContent);
 
         public FaceControl()
         {
@@ -55,43 +69,21 @@ namespace FaceRecognize_Wpf.UCWindows
             //繫結Combo Box資料
             ComboItmeOfWebCam();
 
-            //更新時間排程
-            Task.Run(() => UpdateDate());
+            this.AutoShot.IsEnabled = false;
         }
-
 
         #region Handlers
-        public delegate void MessageShoeDelegate(string Content, string Title);
-        public delegate void CameraStatusDelegate(string Content, Brush brush);
         public delegate void TakeShotDelegate();
         public delegate void FaceResultDelegate(string Content, Brush brush);
-        public delegate void FaceScoreDelegate(double Score);
-        public delegate void UpdateCollentionDelegate();
-
-        /// <summary>
-        /// 修改Web Camera Status
-        /// </summary>
-        /// <param name="Content"></param>
-        /// <param name="brush"></param>
-        public void CameraStatus(string Content, Brush brush)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                this.WebCamContent.Content = Content;
-                this.WebCamContent.Foreground = brush;
-            });
-        }
-
         /// <summary>
         /// 拍照存放圖片
         /// </summary>
         public void TakeShot()
         {
-            MessageShoeDelegate messageShoeDelegate = new MessageShoeDelegate(MessageShow);
             var userName = this.UserName.Text;
             var employeeNum = this.EmployeeNum.Text;
 
-
+            
             var IsUser = NameCollection.UserTable.Where(o => o.Key == employeeNum).FirstOrDefault();
             //編號不可有以下情況
             //1. 空值
@@ -101,14 +93,17 @@ namespace FaceRecognize_Wpf.UCWindows
                 || Regex.IsMatch(employeeNum, @"^[+-]?/d*$")
                 || (IsUser != null && IsUser.Name != userName))
             {
+                takeFeatures = (DateTime?)null;
                 messageShoeDelegate.Invoke("員工編號需要為數字或編號已存在", "注意");
             }
             else if (string.IsNullOrEmpty(userName) || userName.ToLower().Equals("unknow"))
             {
+                takeFeatures = (DateTime?)null;
                 messageShoeDelegate.Invoke("使用者名稱未輸入或出現不合法名稱", "注意");
             }
             else if (!camCapture.IsOpened)
             {
+                takeFeatures = (DateTime?)null;
                 messageShoeDelegate.Invoke("Camera尚未啟用或出現異常", "注意");
             }
             else
@@ -121,12 +116,16 @@ namespace FaceRecognize_Wpf.UCWindows
 
                 if (getFacesFeature.Faces.Count() > 0)
                 {
-                    var userPictureDir = $"{ cameraPath }{employeeNum}.{ userName }";
+                    //Lower UserName 
+                    var lowerUserName = userName.ToLower();
+                    var userPictureDir = $"{ cameraPath }{ employeeNum }.{ lowerUserName }";
+
                     //判斷該照片資料夾是否存在
                     if (!File.Exists(userPictureDir))
                     {
                         Directory.CreateDirectory(userPictureDir);
                     }
+
                     //判斷是否有取得人臉
                     foreach (var faceItem in getFacesFeature.Faces)
                     {
@@ -143,13 +142,12 @@ namespace FaceRecognize_Wpf.UCWindows
                             .Resize(100, 100, Inter.Cubic)
                             .Save($"{userPictureDir}/{ this.UserName.Text }_{ getPictureCount }.jpg");
                     }
-                    messageShoeDelegate.Invoke("拍照完成請進行訓練", "成功");
+                    //messageShoeDelegate.Invoke("拍照完成請進行訓練", "成功");
                 }
                 else
                 {
-                    messageShoeDelegate.Invoke("未偵測到人臉", "注意");
+                    //messageShoeDelegate.Invoke("未偵測到人臉", "注意");
                 }
-
             }
         }
 
@@ -162,46 +160,6 @@ namespace FaceRecognize_Wpf.UCWindows
         {
             this.FaceResultText.Content = Content;
             this.FaceResultText.Foreground = brush;
-        }
-
-        /// <summary>
-        /// Message Box Show
-        /// </summary>
-        /// <param name="Content"></param>
-        /// <param name="Title"></param>
-        public void MessageShow(string Content, string Title)
-        {
-            MessageBox.Show(Content, Title);
-        }
-
-        /// <summary>
-        /// 臉部辨識分數及建議基數計算
-        /// </summary>
-        /// <param name="Score"></param>
-        public void FaceScore(double Score)
-        {
-            this.FaceRecognizeScore.Content = Score.ToString("f2");
-
-            //臉部基數設定
-            //只取100筆做平均計算
-            if (Score >= 1)
-            {
-                scoreAvg.Add(Score);
-                if (scoreAvg.Count > 100)
-                {
-                    //超過100筆,移除第1筆
-                    scoreAvg.RemoveAt(0);
-                }
-                this.BaseScoreAvg.Content = scoreAvg.Average().ToString("f2");
-            }
-        }
-
-        /// <summary>
-        /// 更新人名清冊
-        /// </summary>
-        public void UpdateCollention()
-        {
-            NameCollection.Update();
         }
 
         #endregion
@@ -251,8 +209,6 @@ namespace FaceRecognize_Wpf.UCWindows
             //進入無窮迴圈
             while (true)
             {
-                //每80ms執行一次即可
-                Thread.Sleep(80);
                 try
                 {
                     //當收到Task停止指示時
@@ -273,13 +229,24 @@ namespace FaceRecognize_Wpf.UCWindows
                             //將影格進行人臉追蹤處理
                             var getFaceData = new FaceTrace().TraceFace(camMat);
                             FaceResultDelegate faceResultDelegate = new FaceResultDelegate(FaceResult);
-                            FaceScoreDelegate faceScoreDelegate = new FaceScoreDelegate(FaceScore);
                             if (getFaceData.Faces.Count() == 0)
                             {
                                 this.Dispatcher.Invoke(faceResultDelegate, "NONE", Brushes.Black);
                             }
                             else
                             {
+                                if (takeFeatures.HasValue)
+                                {
+                                    if (takeFeatures >= DateTime.Now)
+                                    {
+                                        this.Dispatcher.Invoke(() =>
+                                        {
+                                            this.Seconds.Text = (takeFeatures.Value.Second - DateTime.Now.Second).ToString();
+                                        });
+                                        this.Dispatcher.Invoke(TakeShot);
+                                    }
+                                }
+
                                 //判斷人臉數
                                 foreach (var faceItem in getFaceData.Faces)
                                 {
@@ -291,8 +258,20 @@ namespace FaceRecognize_Wpf.UCWindows
                                     if (facePass.Item3)
                                     {
                                         var userData = NameCollection.UserTable.Where(o => o.Key == facePass.Item2.ToString()).FirstOrDefault();
-                                        this.Dispatcher.Invoke(faceScoreDelegate, facePass.Item1);
-                                        this.Dispatcher.Invoke(faceResultDelegate, userData.Name + "\r\nPASS", Brushes.Green);
+
+                                        this.Dispatcher.Invoke(labelContentDelegate, this.FaceRecognizeScore, Brushes.Black, facePass.Item1.ToString("f2"));
+
+                                        var userName = "Unknow";
+                                        if (userData != null)
+                                        {
+                                            userName = userData.Name;
+                                        }
+                                        
+
+                                        this.Dispatcher.Invoke(faceResultDelegate, userName + "\r\nPASS", Brushes.Green);
+
+                                        //臉部分數及平均分數
+                                        FaceScoreAvg(facePass.Item1);
                                     }
                                     else
                                     {
@@ -320,6 +299,7 @@ namespace FaceRecognize_Wpf.UCWindows
                 }
                 catch (Exception ex)
                 {
+                    //MessageBox.Show("發生錯誤，請重啟應用程式","注意");
                     //當發生Catch或者Task停止時
                     this.Dispatcher.Invoke(() =>
                     {
@@ -339,21 +319,6 @@ namespace FaceRecognize_Wpf.UCWindows
             }
         }
 
-        /// <summary>
-        /// 更新時間
-        /// </summary>
-        public void UpdateDate()
-        {
-            while (true)
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.NoDate.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                });
-                Thread.Sleep(1000);
-            }
-        }
-
         #endregion
 
         #region Click Action
@@ -365,12 +330,13 @@ namespace FaceRecognize_Wpf.UCWindows
         /// <param name="e"></param>
         private void SetupButton_Click(object sender, RoutedEventArgs e)
         {
-            CameraStatusDelegate cameraStatusDelegate = new CameraStatusDelegate(CameraStatus);
             var webcamIndex = this.WebCamCombo.SelectedIndex - 1;
 
             //文字及顏色初始化
-            var camContent = "";
-            var fontColor = Brushes.Black;
+            CamStatus camStatus ;
+            
+            //
+            var returnMeg = new CamMegDelegate(handlerCollention.ReturnCamMeg);
 
             try
             {
@@ -381,27 +347,38 @@ namespace FaceRecognize_Wpf.UCWindows
                     //判斷是否停用相機
                     if (this.CameraSetupBtn.Content.Equals("停用"))
                     {
+                        //啟用訓練
+                        EnableTrainBtn();
+
                         //停用Camera
                         IsStopTask = true;
 
-                        //啟用訓練
-                        this.TrainingBtn.IsEnabled = true;
+                        //停用連拍
+                        this.AutoShot.IsEnabled = false;
+                        //Work
+                        camStatus = CamStatus.Stop;
+                        this.CameraSetupBtn.Content = "啟用";
+
                     }
                     else
                     {
                         //停用訓練
                         this.TrainingBtn.IsEnabled = false;
-
+                        //啟用連拍
+                        this.AutoShot.IsEnabled = true;
                         //恢復預設值
                         IsStopTask = false;
 
                         //Web Camera狀態,文字輸出
-                        camContent = "啟用";
-                        fontColor = Brushes.Green;
+                        camStatus = CamStatus.Work;
 
                         //鎖定Combo Box以及Btn,避免重複操作
                         this.WebCamCombo.IsEnabled = false;
+
+                        //
                         this.CameraSetupBtn.Content = "停用";
+                        
+
                         //開啟子執行緒,執行Camera串流輸出
                         Task.Run(() => ShowCamera());
                     }
@@ -412,8 +389,10 @@ namespace FaceRecognize_Wpf.UCWindows
                     IsStopTask = true;
 
                     //相機狀態,文字輸出
-                    camContent = @"未選擇正確相機";
-                    fontColor = Brushes.Red;
+                    camStatus = CamStatus.NotFound;
+
+                    //停用連拍
+                    this.AutoShot.IsEnabled = false;
                 }
             }
             catch (Exception ex)
@@ -421,13 +400,15 @@ namespace FaceRecognize_Wpf.UCWindows
                 //停止Task動作
                 IsStopTask = true;
 
+                //停用連拍
+                this.AutoShot.IsEnabled = false;
+
                 //Web Camera狀態,文字輸出
-                camContent = "異常";
-                fontColor = Brushes.Red;
+                camStatus = CamStatus.Exception;
             }
 
             //輸出Web Camera狀態
-            cameraStatusDelegate.Invoke(camContent, fontColor);
+            this.Dispatcher.Invoke(returnMeg,this.WebCamContent, camStatus);
         }
 
         /// <summary>
@@ -437,7 +418,6 @@ namespace FaceRecognize_Wpf.UCWindows
         /// <param name="e"></param>
         private void TakeShotButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageShoeDelegate messageShoeDelegate = new MessageShoeDelegate(MessageShow);
             if (camCapture == null || !camCapture.IsOpened)
             {
                 messageShoeDelegate.Invoke("未偵測到可用WebCam", "注意");
@@ -455,25 +435,32 @@ namespace FaceRecognize_Wpf.UCWindows
         /// <param name="e"></param>
         private void TrainingButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageShoeDelegate messageShoeDelegate = new MessageShoeDelegate(MessageShow);
-            UpdateCollentionDelegate updateCollentionDelegate = new UpdateCollentionDelegate(UpdateCollention);
+            messageShoeDelegate.Invoke($"資料開始訓練請稍後 ...", "成功");
+
+
+            UpdateNameJsonFileDelegate updateNameJsonFileDelegate 
+                = new UpdateNameJsonFileDelegate(handlerCollention.UpdateNameJsonFile);
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             
             //開始訓練
-            var pictureCount = facesRepo.FaceTraining();
+            var pictureCount = facesRepo.MultipleFaceTraining();
 
             //計時停止
             stopWatch.Stop();
             string stopWatchResult = stopWatch.Elapsed.TotalSeconds.ToString();
 
             //更新人名清單
-            this.Dispatcher.Invoke(updateCollentionDelegate);
-            
+            this.Dispatcher.Invoke(updateNameJsonFileDelegate);
+
+
             //顯示資訊
             messageShoeDelegate.Invoke($"訓練完成" +
                 $"\r\n已訓練樣本數：{pictureCount}" +
                 $"\r\n耗時：{stopWatchResult}", "成功");
+
+
         }
         
         /// <summary>
@@ -485,7 +472,7 @@ namespace FaceRecognize_Wpf.UCWindows
         {
             JsonFileApp configureApp = new JsonFileApp();
             var dataApp = configureApp.GetConfigureFileData();
-            dataApp.faceBaseScore = scoreAvg.Average();
+            dataApp.faceBaseScore = scoreAvg.Average().ToString();
             configureApp.UpdateConfigureFile(dataApp);
 
             MessageBox.Show("變更成功，請重啟系統。","成功");
@@ -493,5 +480,54 @@ namespace FaceRecognize_Wpf.UCWindows
            
         }
         #endregion
+
+        #region Other Methon
+        public async void EnableTrainBtn()
+        {
+            Thread.Sleep(500);
+            this.TrainingBtn.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// 臉部辨識分數及建議基數計算
+        /// </summary>
+        /// <param name="Score"></param>
+        private void FaceScoreAvg(double Score)
+        {
+            //臉部基數設定
+            //只取100筆做平均計算
+            if (Score >= 1)
+            {
+                scoreAvg.Add(Score);
+                if (scoreAvg.Count > 100)
+                {
+                    //超過100筆,移除第1筆
+                    scoreAvg.RemoveAt(0);
+                }
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.BaseScoreAvg.Content = scoreAvg.Average().ToString("f2");
+                });
+            }
+        }
+        #endregion
+
+        private void AutoShot_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var IsIntSeconds = int.TryParse(this.Seconds.Text, out var outSeconds);
+                if (IsIntSeconds)
+                {
+                    takeFeatures = DateTime.Now.AddSeconds(outSeconds);
+                    //this.AutoShot.IsEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("秒數為空或非數字。", "警告");
+            }
+        }
     }
 }

@@ -120,15 +120,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helper\ProSerizeNum.cs" />
+    <Compile Include="Emun\CamStatus.cs" />
     <Compile Include="Model\Configure\ConfigureModel.cs" />
     <Compile Include="Model\FaceCollention.cs" />
     <Compile Include="Model\NameList.cs" />
     <Compile Include="Model\PathConf\PathArgs.cs" />
+    <Compile Include="Services\DateConvert.cs" />
     <Compile Include="Services\FaceDetection.cs" />
     <Compile Include="Services\FacesRepositores.cs" />
+    <Compile Include="Services\HandlerCollention.cs" />
     <Compile Include="Services\JsonFileApp.cs" />
     <Compile Include="Services\NameCollection.cs" />
+    <Compile Include="UCWindows\FaceAutoLearning.xaml.cs">
+      <DependentUpon>FaceAutoLearning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UCWindows\FaceConfigure.xaml.cs">
       <DependentUpon>FaceConfigure.xaml</DependentUpon>
     </Compile>
@@ -152,6 +157,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UCWindows\FaceAutoLearning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UCWindows\FaceConfigure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -220,6 +229,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="haarcascade_eye_tree_eyeglasses.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="haarcascade_frontalcatface_extended.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

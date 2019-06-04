@@ -26,19 +26,21 @@
         <Button x:Name="TakeShotBtn" Content="拍照" HorizontalAlignment="Left" Margin="835,81,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="TakeShotButton_Click"/>
         <Label Content="偵測到人臉數量：" HorizontalAlignment="Left" Margin="581,46,0,0" VerticalAlignment="Top" FontSize="16"/>
         <Label x:Name="FaceCount" Content="0" HorizontalAlignment="Left" Margin="714,46,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
-        <Label Content="使用者名稱(僅限英文)：" HorizontalAlignment="Left" Margin="542,186,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label Content="使用者名稱：" HorizontalAlignment="Left" Margin="616,186,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.503,0.733"/>
         <TextBox x:Name="UserName" Text="unknow" HorizontalAlignment="Left" Margin="722,190,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.498,1.469" Width="108"/>
         <Button x:Name="TrainingBtn" Content="訓練" HorizontalAlignment="Left" Margin="835,190,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="22" Click="TrainingButton_Click"/>
-        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="600,281,0,0" VerticalAlignment="Top" FontSize="50" Width="307" Height="82" />
+        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="629,269,0,0" VerticalAlignment="Top" FontSize="50" Width="263" Height="82" />
         <Label Content="臉部分數：" HorizontalAlignment="Left" Margin="632,253,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Label x:Name="FaceRecognizeScore" Content="0.0" HorizontalAlignment="Left" Margin="714,253,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Label Content="建議臉部基數：" HorizontalAlignment="Left" Margin="600,218,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Label x:Name="BaseScoreAvg" Content="0.0" HorizontalAlignment="Left" Margin="714,218,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Button x:Name="UseBase" Content="使用建議基數" HorizontalAlignment="Left" Margin="835,220,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="UseBase_Click"/>
-        <Label Content="識別值：" HorizontalAlignment="Left" Margin="647,151,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label Content="識別值(僅限數字)：" HorizontalAlignment="Left" Margin="574,151,0,0" VerticalAlignment="Top" FontSize="16"/>
         <TextBox x:Name="EmployeeNum" Text="0" HorizontalAlignment="Left" Margin="722,155,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.498,1.469" Width="108"/>
         <Label FontSize="18px" Content="秒連拍" HorizontalAlignment="Left" Margin="676,113,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="Seconds" FontSize="18px" HorizontalAlignment="Left" Height="23" Margin="632,116,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="44"/>
         <Button x:Name="AutoShot" Content="連拍啟動" HorizontalAlignment="Left" Margin="749,115,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.111,0.519" Height="30" Click="AutoShot_Click"/>
+        <Label Content="辨識速度：" HorizontalAlignment="Left" Margin="749,46,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="IDSpeed" Content="0" HorizontalAlignment="Left" Margin="835,46,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
     </Grid>
 </Page>

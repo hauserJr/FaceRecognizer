@@ -57,7 +57,7 @@ namespace FaceRecognize_Wpf
             InitializeComponent();
 
             Task.Run(() => UpdateDate());
-
+            
             FaceControl faceControl = new FaceControl();
             this.FrameContainer.Navigate(faceControl);
         }

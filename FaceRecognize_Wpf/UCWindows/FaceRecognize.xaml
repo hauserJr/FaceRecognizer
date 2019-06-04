@@ -25,7 +25,7 @@
         <Label x:Name="FaceCount" Content="0" HorizontalAlignment="Left" Margin="707,106,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="5.795,0.596"/>
         <Label Content="臉部分數：" HorizontalAlignment="Left" Margin="626,136,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
         <Label x:Name="FaceRecognizeScore" Content="0.0" HorizontalAlignment="Left" Margin="707,136,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
-        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="578,197,0,0" VerticalAlignment="Top" FontSize="50" Width="301" RenderTransformOrigin="0.5,0.5" Height="141" >
+        <Label x:Name="FaceResultText" Content="No Face" HorizontalAlignment="Left" Margin="654,179,0,0" VerticalAlignment="Top" FontSize="18" Width="272" RenderTransformOrigin="0.5,0.5" Height="141" >
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -35,5 +35,6 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
+        <Label Content="最後紀錄：" HorizontalAlignment="Left" Margin="578,179,0,0" VerticalAlignment="Top" FontSize="16" RenderTransformOrigin="0.896,0.489"/>
     </Grid>
 </UserControl>

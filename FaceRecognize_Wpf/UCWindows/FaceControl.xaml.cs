@@ -235,16 +235,22 @@ namespace FaceRecognize_Wpf.UCWindows
                             }
                             else
                             {
-                                if (takeFeatures.HasValue)
+                                if (takeFeatures.HasValue && takeFeatures >= DateTime.Now)
                                 {
-                                    if (takeFeatures >= DateTime.Now)
+                                    this.Dispatcher.Invoke(() =>
                                     {
-                                        this.Dispatcher.Invoke(() =>
+                                        var showSecond = (takeFeatures.Value.Second - DateTime.Now.Second);
+                                        if (showSecond < 0)
+                                        {
+                                            takeFeatures = (DateTime?)null;
+                                            this.Seconds.Text = "0";
+                                        }
+                                        else
                                         {
                                             this.Seconds.Text = (takeFeatures.Value.Second - DateTime.Now.Second).ToString();
-                                        });
-                                        this.Dispatcher.Invoke(TakeShot);
-                                    }
+                                        }
+                                    });
+                                    this.Dispatcher.Invoke(TakeShot);
                                 }
 
                                 //判斷人臉數
@@ -253,8 +259,15 @@ namespace FaceRecognize_Wpf.UCWindows
                                     //繪製人臉框
                                     CvInvoke.Rectangle(camMat, faceItem, new Bgr(System.Drawing.Color.Yellow).MCvScalar, 2);
 
+                                    //開始計時
+                                    Stopwatch stopWatch = new Stopwatch();
+                                    stopWatch.Start();
                                     //判斷人臉是否存在於資料庫
                                     var facePass = facesRepo.FacesRecognize(camCapture.QueryFrame());
+                                    //計時停止
+                                    stopWatch.Stop();
+                                    string stopWatchResult = stopWatch.Elapsed.TotalSeconds.ToString();
+
                                     if (facePass.Item3)
                                     {
                                         var userData = NameCollection.UserTable.Where(o => o.Key == facePass.Item2.ToString()).FirstOrDefault();
@@ -267,7 +280,6 @@ namespace FaceRecognize_Wpf.UCWindows
                                             userName = userData.Name;
                                         }
                                         
-
                                         this.Dispatcher.Invoke(faceResultDelegate, userName + "\r\nPASS", Brushes.Green);
 
                                         //臉部分數及平均分數
@@ -277,6 +289,7 @@ namespace FaceRecognize_Wpf.UCWindows
                                     {
                                         this.Dispatcher.Invoke(faceResultDelegate, "REJECT", Brushes.Red);
                                     }
+                                    this.Dispatcher.Invoke(labelContentDelegate, this.IDSpeed, Brushes.Black, stopWatchResult);
                                 }
                             }
 
@@ -433,33 +446,29 @@ namespace FaceRecognize_Wpf.UCWindows
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TrainingButton_Click(object sender, RoutedEventArgs e)
+        private async void TrainingButton_Click(object sender, RoutedEventArgs e)
         {
-            messageShoeDelegate.Invoke($"資料開始訓練請稍後 ...", "成功");
+            //訓練資料
 
+            //訓練時 所有按鈕關閉
+            this.TrainingBtn.IsEnabled = false;
+            this.CameraSetupBtn.IsEnabled = false;
+            this.TakeShotBtn.IsEnabled = false;
+            this.UseBase.IsEnabled = false;
 
-            UpdateNameJsonFileDelegate updateNameJsonFileDelegate 
-                = new UpdateNameJsonFileDelegate(handlerCollention.UpdateNameJsonFile);
-
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            this.FaceResultText.Content = "訓練中 ...";
+            var asyncTrain = Task.Run(() => TrainingData());
             
-            //開始訓練
-            var pictureCount = facesRepo.MultipleFaceTraining();
+            //等候訓練
+            await asyncTrain;
 
-            //計時停止
-            stopWatch.Stop();
-            string stopWatchResult = stopWatch.Elapsed.TotalSeconds.ToString();
+            //訓練完成
+            this.TrainingBtn.IsEnabled = true;
+            this.CameraSetupBtn.IsEnabled = true;
+            this.TakeShotBtn.IsEnabled = true;
+            this.UseBase.IsEnabled = true;
 
-            //更新人名清單
-            this.Dispatcher.Invoke(updateNameJsonFileDelegate);
-
-
-            //顯示資訊
-            messageShoeDelegate.Invoke($"訓練完成" +
-                $"\r\n已訓練樣本數：{pictureCount}" +
-                $"\r\n耗時：{stopWatchResult}", "成功");
-
+            this.FaceResultText.Content = "訓練完成 ...";
 
         }
         
@@ -479,6 +488,28 @@ namespace FaceRecognize_Wpf.UCWindows
            
            
         }
+
+        /// <summary>
+        /// 定時連拍
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AutoShot_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var IsIntSeconds = int.TryParse(this.Seconds.Text, out var outSeconds);
+                if (IsIntSeconds)
+                {
+                    takeFeatures = DateTime.Now.AddSeconds(outSeconds);
+                    //this.AutoShot.IsEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("秒數為空或非數字。", "警告");
+            }
+        }
         #endregion
 
         #region Other Methon
@@ -486,6 +517,31 @@ namespace FaceRecognize_Wpf.UCWindows
         {
             Thread.Sleep(500);
             this.TrainingBtn.IsEnabled = true;
+        }
+
+        public async Task TrainingData()
+        {
+            UpdateNameJsonFileDelegate updateNameJsonFileDelegate
+                = new UpdateNameJsonFileDelegate(handlerCollention.UpdateNameJsonFile);
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            //開始訓練
+            var pictureCount = facesRepo.MultipleFaceTraining();
+
+            //計時停止
+            stopWatch.Stop();
+            string stopWatchResult = stopWatch.Elapsed.TotalSeconds.ToString();
+
+            //更新人名清單
+            this.Dispatcher.Invoke(updateNameJsonFileDelegate);
+
+            //顯示資訊
+            messageShoeDelegate.Invoke($"訓練完成" +
+                $"\r\n已訓練樣本數：{pictureCount}" +
+                $"\r\n耗時：{stopWatchResult}" +
+                $"\r\n資料於重啟系統後生效。", "成功");
         }
 
         /// <summary>
@@ -512,22 +568,5 @@ namespace FaceRecognize_Wpf.UCWindows
             }
         }
         #endregion
-
-        private void AutoShot_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var IsIntSeconds = int.TryParse(this.Seconds.Text, out var outSeconds);
-                if (IsIntSeconds)
-                {
-                    takeFeatures = DateTime.Now.AddSeconds(outSeconds);
-                    //this.AutoShot.IsEnabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("秒數為空或非數字。", "警告");
-            }
-        }
     }
 }

@@ -59,12 +59,14 @@ namespace FaceRecognize_Wpf.UCWindows
             InitializeComponent();
 
             ComboItmeOfWebCam();
+
         }
 
         #region Handler
         public delegate void FaceResultDelegate(string Content, Brush brush);
 
         public delegate void TakeShotToMLDelegate(Mat CamImg, string _emplyeeNum, string _userName);
+
         /// <summary>
         /// 臉部辨識結果
         /// </summary>
@@ -275,6 +277,8 @@ namespace FaceRecognize_Wpf.UCWindows
                     //判斷是否停用相機
                     if (this.CameraSetupBtn.Content.Equals("停用"))
                     {
+                        camCapture.Dispose();
+
                         //停用Camera
                         IsStopTask = true;
 

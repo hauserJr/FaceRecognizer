@@ -138,7 +138,8 @@ namespace FaceRecognize_Wpf.UCWindows
                             FaceResultDelegate faceResultDelegate = new FaceResultDelegate(FaceResult);
                             if (getFaceData.Faces.Count() == 0)
                             {
-                                this.Dispatcher.Invoke(faceResultDelegate, "NONE", Brushes.Black);
+                                //不顯示找無人臉的資訊
+                                //this.Dispatcher.Invoke(faceResultDelegate, "NONE", Brushes.Black);
                             }
                             else
                             {
@@ -162,11 +163,12 @@ namespace FaceRecognize_Wpf.UCWindows
                                         }
 
                                         this.Dispatcher.Invoke(labelContentDelegate, this.FaceRecognizeScore, Brushes.Black, facePass.Item1.ToString("f2"));
-                                        this.Dispatcher.Invoke(faceResultDelegate, userName + "\r\nPASS", Brushes.Green);
+                                        this.Dispatcher.Invoke(faceResultDelegate,  DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "\r\n" + userName + "\r\nPASS", Brushes.Green);
                                     }
                                     else
                                     {
-                                        this.Dispatcher.Invoke(faceResultDelegate, "REJECT", Brushes.Red);
+                                        //不顯示REJECT資訊
+                                        //this.Dispatcher.Invoke(faceResultDelegate, "REJECT", Brushes.Red);
                                     }
                                 }
                             }

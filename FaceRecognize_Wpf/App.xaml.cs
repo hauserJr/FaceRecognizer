@@ -9,8 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace FaceRecognize_Wpf
 {
@@ -48,11 +46,6 @@ namespace FaceRecognize_Wpf
             {
                 Directory.CreateDirectory(faceSourcePath);
             }
-            //檢查臉部資料庫資料備份夾是否存在
-            if (!Directory.Exists(faceSourcePath_Backup))
-            {
-                Directory.CreateDirectory(faceSourcePath_Backup);
-            }
 
             //判斷資料庫是否存在,不存在則不進入人臉辨識
             if (!File.Exists(facedatPath))
@@ -60,18 +53,19 @@ namespace FaceRecognize_Wpf
                 File.Create(facedatPath).Dispose();
             }
 
-            //判斷備份資料庫是否存在,不存在則不進入人臉辨識
-            if (!File.Exists(facedatPath_Bckup))
+            if (!Directory.Exists(faceSourcePath_Backup))
             {
-                File.Create(facedatPath_Bckup).Dispose();
+                Directory.CreateDirectory(faceSourcePath_Backup);
             }
 
             //Merge data檔案資料
-            var bcakaupFileInfo = new FileInfo(facedatPath_Bckup);
-            var fileInfo = new FileInfo(facedatPath);
-            if (bcakaupFileInfo.Length > fileInfo.Length)
+
+            if (File.Exists(facedatPath_Bckup))
             {
-                File.Copy(facedatPath_Bckup, facedatPath, true); 
+                //將訓練完的新檔案複製到指定目錄
+                File.Copy(facedatPath_Bckup, facedatPath, true);
+                //刪除訓練檔
+                File.Delete(facedatPath_Bckup);
             }
 
             //檢查設定檔是否存在

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace FaceRecognize_Wpf.Services
 {
-    
     public static class NameCollection
     {
         private static string FilePath = $"{PathArgs.dataDomain}{PathArgs.facePicturePath}";

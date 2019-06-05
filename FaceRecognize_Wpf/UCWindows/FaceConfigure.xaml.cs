@@ -40,11 +40,18 @@ namespace FaceRecognize_Wpf.UCWindows
             this.BaseScore.Text = appData.faceBaseScore;
             this.BaseScoreMin.Text = appData.faceMLMinScore;
             this.BaseScoreMax.Text = appData.faceMLMaxScore;
+            this.SamplePictureMax.Text = appData.samplePicutreMax;
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
             var getData = configureApp.GetConfigureFileData();
+
+            if (Int32.TryParse(this.SamplePictureMax.Text, out var numOutpur))
+            {
+                var saveValue = numOutpur <= 0 || numOutpur  > 999 ? -1 : numOutpur;
+                getData.samplePicutreMax = saveValue.ToString();
+            }
 
 
             getData.faceBaseScore = this.BaseScore.Text;

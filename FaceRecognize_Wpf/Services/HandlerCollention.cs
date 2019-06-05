@@ -39,7 +39,6 @@ namespace FaceRecognize_Wpf.Services
     /// </summary>
     public delegate void UpdateNameJsonFileDelegate();
 
-
     public class HandlerCollention
     {
         /// <summary>
@@ -102,7 +101,5 @@ namespace FaceRecognize_Wpf.Services
         {
             NameCollection.Update();
         }
-
-
     }
 }

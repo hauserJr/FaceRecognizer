@@ -3,8 +3,10 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Face;
 using Emgu.CV.Structure;
 using FaceRecognize_Wpf.Helper;
+using FaceRecognize_Wpf.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,6 +27,11 @@ namespace FaceRecognize_Wpf.Services
             faceRecognizer = new EigenFaceRecognizer(80, double.PositiveInfinity);
         }
 
+        /// <summary>
+        /// 單次訓練
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public int FaceTraining(string filePath = null)
         {
             var facesMat = new List<Mat>();
@@ -57,6 +64,11 @@ namespace FaceRecognize_Wpf.Services
             return PictureCount;
         }
 
+        /// <summary>
+        /// 批次訓練
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public int MultipleFaceTraining(string filePath = null)
         {
             var facesMat = new List<Mat>();
@@ -95,6 +107,11 @@ namespace FaceRecognize_Wpf.Services
             return PictureCount;
         }
 
+        /// <summary>
+        /// 臉部辨識
+        /// </summary>
+        /// <param name="face"></param>
+        /// <returns></returns>
         public (double, int, bool) FacesRecognize(Mat face)
         {
 
@@ -147,7 +164,6 @@ namespace FaceRecognize_Wpf.Services
             }
             return (0, 0, false);
         }
-
 
         /// <summary>
         /// 臉部自動訓練
@@ -205,7 +221,50 @@ namespace FaceRecognize_Wpf.Services
             return (0, 0, false);
         }
 
+        /// <summary>
+        /// 儲存Picture
+        /// </summary>
+        /// <param name="faceMat"></param>
+        /// <param name="faceAngle"></param>
+        /// <param name="userPictureDir"></param>
+        /// <param name="userName"></param>
+        public void SavePicture(Mat faceMat, FaceCollention faceAngle ,string userPictureDir, string userName)
+        {
+            var pictureLimit = new JsonFileApp().GetConfigureFileData().samplePicutreMax;
 
+            //判斷該照片資料夾是否存在
+            if (!File.Exists(userPictureDir))
+            {
+                Directory.CreateDirectory(userPictureDir);
+            }
+
+
+            //判斷是否有取得人臉
+            foreach (var faceItem in faceAngle.Faces)
+            {
+                //取得目錄底下的圖片數量
+                var getPictureCount = GetFileCount(userPictureDir);
+
+                //當上限小於當前數量或-1時才進行儲存
+                if (int.Parse(pictureLimit) > getPictureCount || int.Parse(pictureLimit) == -1)
+                {
+                    //儲存人臉
+                    //1. 進行大小處理 100 * 100
+                    //2. 灰階處理
+                    //3. 儲存
+                    faceMat.ToImage<Emgu.CV.Structure.Gray, byte>()
+                        .GetSubRect(faceItem)
+                        .Resize(100, 100, Inter.Cubic)
+                        .Save($"{userPictureDir}/" + $"{ userName }_{ getPictureCount }.jpg");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 取得檔案數量
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public int GetFileCount(string filePath)
         {
             return Directory.GetFiles(filePath).Length;

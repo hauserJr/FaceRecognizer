@@ -143,16 +143,15 @@ namespace FaceRecognize_Wpf.UCWindows
                             }
                             else
                             {
+                                var faceRectColor = System.Drawing.Color.Red;
                                 //判斷人臉數
                                 foreach (var faceItem in getFaceData.Faces)
                                 {
-                                    //繪製人臉框
-                                    CvInvoke.Rectangle(camMat, faceItem, new Bgr(System.Drawing.Color.Yellow).MCvScalar, 2);
-
                                     //判斷人臉是否存在於資料庫
                                     var facePass = facesRepo.FacesRecognize(camCapture.QueryFrame());
                                     if (facePass.Item3)
                                     {
+                                        faceRectColor = System.Drawing.Color.Green;
                                         var userData = NameCollection.UserTable.Where(o => o.Key == facePass.Item2.ToString()).FirstOrDefault();
 
                                         //臉部分數
@@ -170,6 +169,9 @@ namespace FaceRecognize_Wpf.UCWindows
                                         //不顯示REJECT資訊
                                         //this.Dispatcher.Invoke(faceResultDelegate, "REJECT", Brushes.Red);
                                     }
+
+                                    //繪製人臉框
+                                    CvInvoke.Rectangle(camMat, faceItem, new Bgr(faceRectColor).MCvScalar, 2);
                                 }
                             }
 

@@ -95,24 +95,15 @@ namespace FaceRecognize_Wpf.UCWindows
                 var lowerUserName = userName.ToLower();
                 var userPictureDir = $"{ cameraPath }{ employeeNum }.{ lowerUserName }";
 
-                //判斷是否有取得人臉
-                foreach (var faceItem in getFacesFeature.Faces)
+                if (getFacesFeature.Faces.Count() > 0)
                 {
-                    //儲存人臉
-                    //1. 進行大小處理 100 * 100
-                    //2. 灰階處理
-                    //3. 儲存
-
-                    //取得目錄底下的圖片數量
-                    var getPictureCount = facesRepo.GetFileCount(userPictureDir);
-
-                    CamImg.ToImage<Emgu.CV.Structure.Gray, byte>()
-                        .GetSubRect(faceItem)
-                        .Resize(100, 100, Inter.Cubic)
-                        .Save($"{userPictureDir}/{ userName }_{ getPictureCount }.jpg");
+                    facesRepo.SavePicture(CamImg, getFacesFeature, userPictureDir, lowerUserName);
+                    var pictureCount = facesRepo.FaceTraining(userPictureDir);
                 }
-                var pictureCount = facesRepo.FaceTraining(userPictureDir);
-
+                else
+                {
+                    //messageShoeDelegate.Invoke("未偵測到人臉", "注意");
+                }
             }
             catch (Exception ex)
             {

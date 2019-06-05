@@ -25,6 +25,11 @@
             HorizontalAlignment="Left" Margin="10,250,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="BaseScoreMax" FontSize="18" Height="23" Margin="200,254,0,0" TextWrapping="Wrap" Text="TextBox" Width="88" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         <Label x:Name="BaseScoreDesc_Copy" FontSize="14" Content="當啟動自動訓練後，臉部辨識基數落於區間內將會自動訓練。" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top" Width="536" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
+        <Label Content="樣本訓練數量上限："
+            FontSize="18"
+            HorizontalAlignment="Left" Margin="403,59,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="SamplePictureMax" FontSize="18" Height="23" Margin="575,63,0,0" TextWrapping="Wrap" Text="TextBox" Width="88" Background="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label x:Name="BaseScoreDesc_Copy1" FontSize="14" Content="設定值需介於1~999間,若設定-1則為無上限。" HorizontalAlignment="Left" Margin="407,86,0,0" VerticalAlignment="Top" Width="536" FontFamily="Berlin Sans FB Demi" Background="{x:Null}"/>
 
     </Grid>
 </Page>

@@ -119,30 +119,7 @@ namespace FaceRecognize_Wpf.UCWindows
                     //Lower UserName 
                     var lowerUserName = userName.ToLower();
                     var userPictureDir = $"{ cameraPath }{ employeeNum }.{ lowerUserName }";
-
-                    //判斷該照片資料夾是否存在
-                    if (!File.Exists(userPictureDir))
-                    {
-                        Directory.CreateDirectory(userPictureDir);
-                    }
-
-                    //判斷是否有取得人臉
-                    foreach (var faceItem in getFacesFeature.Faces)
-                    {
-                        //儲存人臉
-                        //1. 進行大小處理 100 * 100
-                        //2. 灰階處理
-                        //3. 儲存
-
-                        //取得目錄底下的圖片數量
-                        var getPictureCount = facesRepo.GetFileCount(userPictureDir);
-
-                        camMat.ToImage<Emgu.CV.Structure.Gray, byte>()
-                            .GetSubRect(faceItem)
-                            .Resize(100, 100, Inter.Cubic)
-                            .Save($"{userPictureDir}/{ this.UserName.Text }_{ getPictureCount }.jpg");
-                    }
-                    //messageShoeDelegate.Invoke("拍照完成請進行訓練", "成功");
+                    facesRepo.SavePicture(camMat, getFacesFeature, userPictureDir, lowerUserName);
                 }
                 else
                 {
@@ -236,11 +213,11 @@ namespace FaceRecognize_Wpf.UCWindows
                             else
                             {
                                 if (takeFeatures.HasValue && takeFeatures >= DateTime.Now)
-                                {
+                                {   
                                     this.Dispatcher.Invoke(() =>
                                     {
                                         var showSecond = (takeFeatures.Value.Second - DateTime.Now.Second);
-                                        if (showSecond < 0)
+                                        if (showSecond <= 0 || !takeFeatures.HasValue)
                                         {
                                             takeFeatures = (DateTime?)null;
                                             this.Seconds.Text = "0";

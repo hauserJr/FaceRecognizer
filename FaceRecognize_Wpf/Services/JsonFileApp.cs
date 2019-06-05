@@ -16,12 +16,21 @@ namespace FaceRecognize_Wpf.Services
         {
 
         }
+
+        /// <summary>
+        /// 更新Json檔內容
+        /// </summary>
+        /// <param name="Data"></param>
         public void UpdateConfigureFile(ConfigureModel Data)
         {
             File.WriteAllText(configureFilePath
                 , JsonConvert.SerializeObject(Data, Formatting.Indented));
         }
 
+        /// <summary>
+        /// 取得Json檔內容
+        /// </summary>
+        /// <returns></returns>
         public ConfigureModel GetConfigureFileData()
         {
             var configureModel = new ConfigureModel();

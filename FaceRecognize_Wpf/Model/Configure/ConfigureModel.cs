@@ -56,5 +56,18 @@ namespace FaceRecognize_Wpf.Model.Configure
                 _faceMLMaxScore = value;
             }
         }
+
+        private string _samplePicutreMax = "-1";
+        public string samplePicutreMax
+        {
+            get
+            {
+                return _samplePicutreMax;
+            }
+            set
+            {
+                _samplePicutreMax = value;
+            }
+        }
     }
 }

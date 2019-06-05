@@ -212,7 +212,7 @@ namespace FaceRecognize_Wpf.UCWindows
                             }
                             else
                             {
-                                if (takeFeatures.HasValue && takeFeatures >= DateTime.Now)
+                                if (takeFeatures >= DateTime.Now)
                                 {   
                                     this.Dispatcher.Invoke(() =>
                                     {
@@ -222,9 +222,13 @@ namespace FaceRecognize_Wpf.UCWindows
                                             takeFeatures = (DateTime?)null;
                                             this.Seconds.Text = "0";
                                         }
-                                        else
+                                        else if (showSecond > 0)
                                         {
                                             this.Seconds.Text = (takeFeatures.Value.Second - DateTime.Now.Second).ToString();
+                                        }
+                                        else
+                                        {
+                                            this.Seconds.Text = "0";
                                         }
                                     });
                                     this.Dispatcher.Invoke(TakeShot);

@@ -212,6 +212,7 @@ namespace FaceRecognize_Wpf.UCWindows
                             }
                             else
                             {
+                                //倒數
                                 if (takeFeatures >= DateTime.Now)
                                 {   
                                     this.Dispatcher.Invoke(() =>
